@@ -1,5 +1,6 @@
 import Nav from "./components/Nav";
 import Hero from "./components/Hero";
+import Marquee from "./components/Marquee";
 import About from "./components/About";
 import Skills from "./components/Skills";
 import Experience from "./components/Experience";
@@ -15,6 +16,7 @@ export default function Home() {
       <Nav />
       <main>
         <Hero />
+        <Marquee />
         <About />
         <Skills />
         <Experience />

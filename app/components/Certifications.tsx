@@ -2,36 +2,36 @@
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 
-const certs = [
-  {
-    title: "Python and Flask Framework Complete Course",
-    issuer: "Udemy",
-    date: "Sep 2024",
-    icon: "🐍",
-    accent: "var(--accent-green)",
-  },
-  {
-    title: "Full Stack Web Development Course 2024",
-    issuer: "Udemy",
-    date: "Sep 2024",
-    icon: "🌐",
-    accent: "var(--accent-pink)",
-  },
-  {
-    title: "The Git and GitHub Bootcamp",
-    issuer: "Udemy",
-    date: "May 2024",
-    icon: "🔧",
-    accent: "#a8f5d8",
-  },
-  {
-    title: "Docker for Beginners: Hands-On Practice (+12 hrs)",
-    issuer: "Udemy",
-    date: "Jul 2024",
-    icon: "🐳",
-    accent: "#f5e8a8",
-  },
-];
+   const certs = [
+     {
+       title: "Python and Flask Framework Complete Course",
+       issuer: "Udemy",
+       date: "Sep 2024",
+       url: "https://www.udemy.com/certificate/UC-92dfa68d-079a-4552-a09e-b1154438a536/",
+       accent: "var(--accent-green)",
+     },
+     {
+       title: "Full Stack Web Development Course 2024",
+       issuer: "Udemy",
+       date: "Sep 2024",
+       url: "https://www.udemy.com/certificate/UC-a57a844f-6c85-4615-aad7-8a86dcece02f/",
+       accent: "var(--accent-pink)",
+     },
+     {
+       title: "The Git and GitHub Bootcamp",
+       issuer: "Udemy",
+       date: "May 2024",
+       url: "https://www.udemy.com/certificate/UC-dadf2711-851d-42c1-9dd8-963ade81e32d/",
+       accent: "#a8f5d8",
+     },
+     {
+       title: "Docker for Beginners: Hands-On Practice (+12 hrs)",
+       issuer: "Udemy",
+       date: "Jul 2024",
+       url: "https://www.udemy.com/certificate/UC-244564b5-700b-4e34-8f2b-010cb4c277c3/",
+       accent: "#f5e8a8",
+     },
+   ];
 
 export default function Certifications() {
   const ref = useRef<HTMLDivElement>(null);
@@ -103,99 +103,113 @@ export default function Certifications() {
         </span>
       </motion.h2>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
-          gap: 20,
-        }}
-      >
-        {certs.map((cert, i) => (
-          <motion.div
-            key={cert.title}
-            initial={{ opacity: 0, y: 24 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.5, delay: i * 0.09 }}
-            whileHover={{ y: -4, borderColor: "rgba(255,255,255,0.14)" }}
-            style={{
-              padding: "28px 24px",
-              borderRadius: 16,
-              border: "1px solid rgba(255,255,255,0.07)",
-              background: "var(--surface)",
-              transition: "border-color 0.3s, transform 0.3s",
-              position: "relative",
-              overflow: "hidden",
-            }}
-          >
-            {/* Top glow */}
-            <div
-              style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                right: 0,
-                height: 1,
-                background: `linear-gradient(to right, transparent, ${cert.accent}40, transparent)`,
-              }}
-            />
-
-            <div
-              style={{
-                fontSize: 28,
-                marginBottom: 16,
-                display: "block",
-              }}
+       <div
+         style={{
+           display: "grid",
+           gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+           gap: 20,
+         }}
+       >
+          {certs.map((cert, i) => (
+            <a
+              href={cert.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              key={cert.title}
             >
-              {cert.icon}
-            </div>
-
-            <h3
-              style={{
-                fontFamily: "Syne, sans-serif",
-                fontWeight: 700,
-                fontSize: 15,
-                color: "#fff",
-                lineHeight: 1.35,
-                marginBottom: 10,
-                letterSpacing: "-0.01em",
-              }}
-            >
-              {cert.title}
-            </h3>
-
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginTop: "auto",
-              }}
-            >
-              <span
+              <motion.div
+                initial={{ opacity: 0, y: 24 }}
+                animate={inView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.5, delay: i * 0.09 }}
+                whileHover={{ y: -4, borderColor: "rgba(255,255,255,0.14)" }}
                 style={{
-                  fontFamily: "DM Mono, monospace",
-                  fontSize: 11,
-                  color: cert.accent,
-                  opacity: 0.8,
-                  letterSpacing: "0.04em",
+                  padding: "28px 24px",
+                  borderRadius: 16,
+                  border: "1px solid rgba(255,255,255,0.07)",
+                  background: "var(--surface)",
+                  transition: "border-color 0.3s, transform 0.3s",
+                  position: "relative",
+                  overflow: "hidden",
                 }}
               >
-                {cert.issuer}
-              </span>
-              <span
-                style={{
-                  fontFamily: "DM Mono, monospace",
-                  fontSize: 10,
-                  color: "rgba(255,255,255,0.25)",
-                  letterSpacing: "0.04em",
-                }}
-              >
-                {cert.date}
-              </span>
-            </div>
-          </motion.div>
-        ))}
-      </div>
+               {/* Top glow */}
+               <div
+                 style={{
+                   position: "absolute",
+                   top: 0,
+                   left: 0,
+                   right: 0,
+                   height: 1,
+                   background: `linear-gradient(to right, transparent, ${cert.accent}40, transparent)`,
+                 }}
+               />
+
+               <div
+                 style={{
+                   width: 28,
+                   height: 28,
+                   backgroundColor: cert.accent,
+                   borderRadius: 6,
+                   display: "flex",
+                   alignItems: "center",
+                   justifyContent: "center",
+                   color: "#fff",
+                   fontWeight: 600,
+                   fontSize: 14,
+                   marginBottom: 16,
+                 }}
+               >
+                 {cert.title.charAt(0)}
+               </div>
+
+             <h3
+               style={{
+                 fontFamily: "Syne, sans-serif",
+                 fontWeight: 700,
+                 fontSize: 15,
+                 color: "#fff",
+                 lineHeight: 1.35,
+                 marginBottom: 10,
+                 letterSpacing: "-0.01em",
+               }}
+             >
+               {cert.title}
+             </h3>
+
+             <div
+               style={{
+                 display: "flex",
+                 justifyContent: "space-between",
+                 alignItems: "center",
+                 marginTop: "auto",
+               }}
+             >
+               <span
+                 style={{
+                   fontFamily: "DM Mono, monospace",
+                   fontSize: 11,
+                   color: cert.accent,
+                   opacity: 0.8,
+                   letterSpacing: "0.04em",
+                 }}
+               >
+                 {cert.issuer}
+               </span>
+               <span
+                 style={{
+                   fontFamily: "DM Mono, monospace",
+                   fontSize: 10,
+                   color: "rgba(255,255,255,0.25)",
+                   letterSpacing: "0.04em",
+                 }}
+               >
+                 {cert.date}
+               </span>
+             </div>
+           </motion.div>
+           </a>
+         ))}
+       </div>
     </section>
   );
 }
