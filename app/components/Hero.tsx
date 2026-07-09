@@ -1,6 +1,7 @@
 "use client";
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
+import CursorTrail from "./CursorTrail";
 
 export const ROLES = [
   "Full-Stack Developer",
@@ -61,6 +62,9 @@ export default function Hero() {
         }}
       />
 
+      {/* Artistic cursor trail */}
+      <CursorTrail />
+
       {/* Spline scene container */}
       <div
         style={{
@@ -87,6 +91,7 @@ export default function Hero() {
       >
         {/* Main heading */}
         <motion.h1
+          id="hero-title"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}

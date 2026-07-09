@@ -1,6 +1,6 @@
 "use client";
-import { useRef } from "react";
-import { motion, useInView } from "framer-motion";
+import { useRef, useState } from "react";
+import { motion, useInView, AnimatePresence } from "framer-motion";
 
 const projects = [
   {
@@ -16,7 +16,6 @@ const projects = [
       "Healthcare data extraction pipeline",
       "Modular FastAPI architecture",
     ],
-    featured: true,
   },
   {
     number: "02",
@@ -31,7 +30,6 @@ const projects = [
       "Visual defect detection (YOLOv8)",
       "NL-to-SQL for 3 database engines",
     ],
-    featured: true,
   },
   {
     number: "03",
@@ -46,7 +44,6 @@ const projects = [
       "Real-time style transfer",
       "Flask-powered web UI",
     ],
-    featured: false,
   },
   {
     number: "04",
@@ -61,13 +58,22 @@ const projects = [
       "EC2 access controls",
       "Principle of least privilege",
     ],
-    featured: false,
   },
 ];
 
 export default function Projects() {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
+  const [open, setOpen] = useState<Set<number>>(new Set());
+
+  const toggle = (i: number) => {
+    setOpen((prev) => {
+      const next = new Set(prev);
+      if (next.has(i)) next.delete(i);
+      else next.add(i);
+      return next;
+    });
+  };
 
   return (
     <section
@@ -111,78 +117,56 @@ export default function Projects() {
         />
       </motion.div>
 
+      {/* Section title — matches Hero "SRISTI ACHARYA" font style */}
       <motion.h2
         initial={{ opacity: 0, y: 20 }}
         animate={inView ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.6, delay: 0.1 }}
         style={{
-          fontFamily: "Syne, sans-serif",
-          fontWeight: 800,
-          fontSize: "clamp(28px, 4vw, 44px)",
-          letterSpacing: "-0.025em",
-          marginBottom: 64,
+          fontFamily: "Barlow, sans-serif",
+          fontWeight: 900,
+          fontSize: "clamp(48px, 9vw, 120px)",
+          lineHeight: 1.0,
+          letterSpacing: "0.04em",
+          textTransform: "uppercase",
           color: "#fff",
+          marginBottom: 56,
         }}
       >
-        Things I&apos;ve{" "}
-        <span
-          style={{
-            fontFamily: "Instrument Serif, serif",
-            fontStyle: "italic",
-            color: "var(--accent-green)",
-          }}
-        >
-          built
-        </span>
+        Projects
       </motion.h2>
 
-      {/* Featured projects (large) */}
-      <div style={{ display: "flex", flexDirection: "column", gap: 24, marginBottom: 24 }}>
-        {projects
-          .filter((p) => p.featured)
-          .map((project, i) => (
-            <ProjectCard key={project.number} project={project} index={i} large />
-          ))}
+      {/* Single-column accordion */}
+      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+        {projects.map((project, i) => (
+          <ProjectItem
+            key={project.number}
+            project={project}
+            index={i}
+            isOpen={open.has(i)}
+            onToggle={() => toggle(i)}
+            inView={inView}
+          />
+        ))}
       </div>
-
-      {/* Smaller projects */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: 24,
-        }}
-        className="small-projects-grid"
-      >
-        {projects
-          .filter((p) => !p.featured)
-          .map((project, i) => (
-            <ProjectCard key={project.number} project={project} index={i + 2} large={false} />
-          ))}
-      </div>
-
-      <style>{`
-        @media (max-width: 640px) {
-          .small-projects-grid {
-            grid-template-columns: 1fr !important;
-          }
-        }
-      `}</style>
     </section>
   );
 }
 
-function ProjectCard({
+function ProjectItem({
   project,
   index,
-  large,
+  isOpen,
+  onToggle,
+  inView,
 }: {
   project: (typeof projects)[0];
   index: number;
-  large: boolean;
+  isOpen: boolean;
+  onToggle: () => void;
+  inView: boolean;
 }) {
   const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-60px" });
 
   return (
     <motion.div
@@ -190,23 +174,14 @@ function ProjectCard({
       initial={{ opacity: 0, y: 30 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.6, delay: index * 0.07, ease: [0.16, 1, 0.3, 1] }}
-      whileHover={{ y: -4 }}
       style={{
-        padding: large ? "40px 36px" : "28px 24px",
         borderRadius: 20,
         border: "1px solid rgba(255,255,255,0.07)",
         background: "var(--surface)",
         position: "relative",
         overflow: "hidden",
-        cursor: "default",
         transition: "border-color 0.3s",
       }}
-      onMouseEnter={(e) =>
-        ((e.currentTarget as HTMLDivElement).style.borderColor = "rgba(255,255,255,0.14)")
-      }
-      onMouseLeave={(e) =>
-        ((e.currentTarget as HTMLDivElement).style.borderColor = "rgba(255,255,255,0.07)")
-      }
     >
       {/* Glow */}
       <div
@@ -222,56 +197,51 @@ function ProjectCard({
         }}
       />
 
-      <div
+      <button
+        onClick={onToggle}
+        aria-expanded={isOpen}
         style={{
+          width: "100%",
           display: "flex",
           justifyContent: "space-between",
-          alignItems: "flex-start",
-          marginBottom: 20,
-          flexWrap: "wrap",
-          gap: 12,
+          alignItems: "center",
+          gap: 16,
+          padding: "28px 32px",
+          background: "transparent",
+          border: "none",
+          cursor: "pointer",
+          textAlign: "left",
         }}
       >
-        <div>
-          <div
-            style={{
-              fontFamily: "DM Mono, monospace",
-              fontSize: 11,
-              color: project.accent,
-              letterSpacing: "0.1em",
-              marginBottom: 8,
-            }}
-          >
-            {project.number}
-          </div>
-          <h3
-            style={{
-              fontFamily: "Syne, sans-serif",
-              fontWeight: 800,
-              fontSize: large ? 24 : 18,
-              color: "#fff",
-              letterSpacing: "-0.02em",
-              lineHeight: 1.2,
-              marginBottom: 4,
-            }}
-          >
-            {project.title}
-          </h3>
-          <div
+        <div style={{ display: "flex", alignItems: "baseline", gap: 16, flexWrap: "wrap" }}>
+          <span
             style={{
               fontFamily: "DM Mono, monospace",
               fontSize: 12,
-              color: "rgba(255,255,255,0.35)",
-              letterSpacing: "0.02em",
+              color: project.accent,
+              letterSpacing: "0.1em",
             }}
           >
-            {project.subtitle}
-          </div>
+            {project.number}
+          </span>
+          <span
+            style={{
+              fontFamily: "Barlow, sans-serif",
+              fontWeight: 900,
+              fontSize: "clamp(20px, 3.4vw, 34px)",
+              color: "#fff",
+              letterSpacing: "0.02em",
+              textTransform: "uppercase",
+              lineHeight: 1.1,
+            }}
+          >
+            {project.title}
+          </span>
         </div>
 
-        {/* Arrow icon */}
-        <div
+        <span
           style={{
+            flexShrink: 0,
             width: 36,
             height: 36,
             borderRadius: 10,
@@ -279,80 +249,108 @@ function ProjectCard({
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            color: "rgba(255,255,255,0.3)",
-            flexShrink: 0,
+            color: "rgba(255,255,255,0.5)",
+            fontSize: 20,
+            lineHeight: 1,
+            transform: isOpen ? "rotate(45deg)" : "rotate(0deg)",
+            transition: "transform 0.3s ease",
           }}
         >
-          ↗
-        </div>
-      </div>
+          +
+        </span>
+      </button>
 
-      <p
-        style={{
-          fontFamily: "DM Mono, monospace",
-          fontSize: large ? 14 : 12,
-          color: "rgba(255,255,255,0.45)",
-          lineHeight: 1.75,
-          marginBottom: 24,
-        }}
-      >
-        {project.description}
-      </p>
-
-      {large && (
-        <div style={{ marginBottom: 24 }}>
-          {project.highlights.map((h) => (
-            <div
-              key={h}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 8,
-                marginBottom: 6,
-              }}
-            >
+      <AnimatePresence initial={false}>
+        {isOpen && (
+          <motion.div
+            key="content"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+            style={{ overflow: "hidden" }}
+          >
+            <div style={{ padding: "0 32px 32px" }}>
               <div
-                style={{
-                  width: 4,
-                  height: 4,
-                  borderRadius: "50%",
-                  background: project.accent,
-                  flexShrink: 0,
-                }}
-              />
-              <span
                 style={{
                   fontFamily: "DM Mono, monospace",
                   fontSize: 12,
-                  color: "rgba(255,255,255,0.5)",
+                  color: "rgba(255,255,255,0.35)",
+                  letterSpacing: "0.02em",
+                  marginBottom: 16,
                 }}
               >
-                {h}
-              </span>
-            </div>
-          ))}
-        </div>
-      )}
+                {project.subtitle}
+              </div>
 
-      <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-        {project.tags.map((tag) => (
-          <span
-            key={tag}
-            style={{
-              padding: "4px 10px",
-              borderRadius: 6,
-              background: `${project.accent}12`,
-              border: `1px solid ${project.accent}25`,
-              fontFamily: "DM Mono, monospace",
-              fontSize: 11,
-              color: project.accent,
-              letterSpacing: "0.03em",
-            }}
-          >
-            {tag}
-          </span>
-        ))}
-      </div>
+              <p
+                style={{
+                  fontFamily: "DM Mono, monospace",
+                  fontSize: 14,
+                  color: "rgba(255,255,255,0.45)",
+                  lineHeight: 1.75,
+                  marginBottom: 24,
+                }}
+              >
+                {project.description}
+              </p>
+
+              <div style={{ marginBottom: 24 }}>
+                {project.highlights.map((h) => (
+                  <div
+                    key={h}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 8,
+                      marginBottom: 6,
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 4,
+                        height: 4,
+                        borderRadius: "50%",
+                        background: project.accent,
+                        flexShrink: 0,
+                      }}
+                    />
+                    <span
+                      style={{
+                        fontFamily: "DM Mono, monospace",
+                        fontSize: 12,
+                        color: "rgba(255,255,255,0.5)",
+                      }}
+                    >
+                      {h}
+                    </span>
+                  </div>
+                ))}
+              </div>
+
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                {project.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    style={{
+                      padding: "4px 10px",
+                      borderRadius: 6,
+                      background: `${project.accent}12`,
+                      border: `1px solid ${project.accent}25`,
+                      fontFamily: "DM Mono, monospace",
+                      fontSize: 11,
+                      color: project.accent,
+                      letterSpacing: "0.03em",
+                    }}
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }
